@@ -4,10 +4,9 @@ from pathlib import Path
 
 class Settings(BaseSettings):
     # OpenAI Settings
-    BASE_URL: str = "https://api.openai.com"
+    BASE_URL: str
     API_KEY: str
-    MODEL_NAME: str = "casperhansen/llama-3.3-70b-instruct-awq"
-    QWEN_MODEL: str = "Qwen/Qwen2.5-72B-Instruct-GPTQ-Int4"
+    MODEL_NAME: str
 
     # File Storage Settings
     UPLOAD_DIR: str = str(Path(__file__).parent / "data" / "raw")

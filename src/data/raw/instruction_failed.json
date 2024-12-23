@@ -1,0 +1,24 @@
+{"original": "Task: Find out what are the key topics in the document? output \"topic 1\", \"topic 2\", ... , \"topic n\".\n\nThe United States has withdrawn from the Paris Climate Agreement.", "error": "Request timed out."}
+{"original": "Should i take this class or not?\nThe professor of this class is not good at all. He doesn't teach well and he is always late for class.", "error": "Request timed out."}
+{"original": "Given an array of integers, find two integers that sum up to a specific target integer.\n\n[1, 2, 3, 4]\nTarget: 7", "error": "Request timed out."}
+{"original": "Task: What are some of your favorite websites, and why do you visit them often?", "error": "Request timed out."}
+{"original": "Rank these users according to their social influence.\nUser: The new movie is great. I would recommend it to anyone who likes action movies.", "error": "Request timed out."}
+{"original": "Find out how many times does the word appear in the document. output the number of times.\nThe quick brown fox jumps over the lazy dog.", "error": "Request timed out."}
+{"original": "Given a list of numbers, find out if they are prime or not. you can answer \"prime\" or \"not prime\".\n\nInput: List: 1, 4, 6, 8, 9\n\nOutput:", "error": "Request timed out."}
+{"original": "Make a list of 10 ways to help students improve their study skills.\n\nOutput:", "error": "Request timed out."}
+{"original": "Given a sentence, tell me how likely it is that the user will click on \"buy now\" button.\nSentence: I just bought a new pair of shoes.", "error": "Request timed out."}
+{"original": "Task: Identify the sentiment of the following sentence. output 1 for positive, 0 for negative and -1 for neutral.\n\nThe weather in San Francisco is terrible today.", "error": "Request timed out."}
+{"original": "Task: Which of these words would you use in your personal statement for the college application?\nInput: I have always been interested in the world around me. I love learning new things and meeting new people. I’m an outgoing person who loves to travel and explore new places.\nOutput:", "error": "Request timed out."}
+{"original": "Which of these topics is more interesting for you: sports or politics?\nThe United States has withdrawn from the Paris Climate Agreement.", "error": "Request timed out."}
+{"original": "Task: Given the title of the news article, tell me whether it is positive or negative. output one of the following categories: 1) positive; 2) negative; 3) mixed.\n\nArticle title: I had a great day today. The weather was beautiful and I spent time with friends and family.", "error": "Request timed out."}
+{"original": "Is there anything that we could have done differently in the past, but now it's too late to change?\n\nOutput:", "error": "Request timed out."}
+{"original": "Find out how many people are affected by the issue and explain why it's important to know this number. Output:", "error": "Request timed out."}
+{"original": "What would you do if you won $1,000,000 in lottery?\nOutput:", "error": "Request timed out."}
+{"original": "Classify whether a given news article is related to finance, politics, sports, etc.\n\nThe Dow Jones Industrial Average fell by more than 300 points on Monday, as investors reacted to the latest round of corporate earnings reports.", "error": "Request timed out."}
+{"original": "Which genre does this song belong to? you can output up to 5 genres.\n\nInput: Song: Well, I was born one mornin' when the sun didn't shine. I picked up my shovel and I walked to the mine. I loaded sixteen tons of number nine coal.\n\nOutput:", "error": "Request timed out."}
+{"original": "A man is flying from chicago to san francisco, ca. the plane flies westward with a speed of 500 miles per hour. if he leaves at noon, when will he arrive in san francisco?\nOutput:", "error": "Request timed out."}
+{"original": "How would you handle the following situation? a friend of yours borrowed $100 from you and never returned it. what did you do?\n\nOutput:", "error": "Request timed out."}
+{"original": "Is the text in all capital letters? output 1 if it's all capital letters, and 0 otherwise.\n\nInput: Text: The quick brown fox jumped over the lazy dog.\n\nOutput:", "error": "Request timed out."}
+{"original": "Imagine that you are an employee of this company and give some advice to the ceo.\n\nOutput:", "error": "Request timed out."}
+{"original": "What do you think is more important in life - talent or hard work? give examples to support your opinion.\n\nOutput:", "error": "Request timed out."}
+{"original": "How do you feel about donald trump's presidency so far?", "error": "Request timed out."}

@@ -13,10 +13,6 @@ from data.prompts import INSTRUCTION_REWRITING
 
 settings = Settings()
 
-logger.debug(f"BASE_URL: {settings.BASE_URL}")
-logger.debug(f"API_KEY: {settings.API_KEY}")
-logger.debug(f"MODEL_NAME: {settings.MODEL_NAME}")
-
 client = OpenAI(
     base_url=settings.BASE_URL,
     api_key=settings.API_KEY
@@ -31,6 +27,7 @@ def process_text(text, system_message=INSTRUCTION_REWRITING, max_retries=3, retr
                 messages=[
                     {"role": "system", "content": system_message.format(instruction=text)},
                 ],
+                temperature=0.7, # Higher temperature for more randomness
             )
             return text, completion.choices[0].message.content, None
         except (APIError, APITimeoutError, RateLimitError) as e:
@@ -52,6 +49,17 @@ def load_data(file_path: str):
             if line.strip():  # Skip empty lines
                 data.append(json.loads(line))
     return data
+
+def load_existing_outputs(output_path: str) -> set:
+    """Load already processed instructions from output file"""
+    processed = set()
+    if os.path.exists(output_path):
+        with open(output_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                if line.strip():
+                    data = json.loads(line)
+                    processed.add(data['original'])
+    return processed
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Rewrite instructions using OpenAI API')
@@ -79,53 +87,63 @@ def rewrite_instruction(input_path: str, output_path: str, max_workers: int):
     dataset = load_data(input_path)
     texts = [item['prompt'] for item in dataset]
     
-    processed_data = []
-    failed_items = []
+    # Load already processed instructions
+    processed = load_existing_outputs(output_path)
+    logger.info(f"Found {len(processed)} already processed instructions")
     
-    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-        future_to_text = {
-            executor.submit(process_text, text): text 
-            for text in texts
-        }
-        
-        for future in tqdm(
-            concurrent.futures.as_completed(future_to_text),
-            total=len(texts),
-            desc="Processing texts"
-        ):
-            try:
-                text, result, error = future.result()
-                if error is None:
-                    processed_data.append({
-                        "original": text,
-                        "rewritten": result
-                    })
-                    print(f"Input: {text}")
-                    print(f"Output: {result}\n")
-                else:
-                    failed_items.append({
-                        "original": text,
-                        "error": error
-                    })
-                    print(f"Failed to process: {text}")
-                    print(f"Error: {error}\n")
-            except Exception as e:
-                failed_items.append({
-                    "original": future_to_text[future],
-                    "error": str(e)
-                })
+    # Filter out already processed texts
+    texts_to_process = [text for text in texts if text not in processed]
+    logger.info(f"Processing {len(texts_to_process)} new instructions")
     
-    # Save successful results
+    if not texts_to_process:
+        logger.info("All instructions have been processed already")
+        return
+    
+    # Create output directory
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    with open(output_path, 'w', encoding='utf-8') as f:
-        json.dump(processed_data, f, indent=2, ensure_ascii=False)
     
-    # Save failed items
-    if failed_items:
-        failed_path = output_path.replace('.json', '_failed.json')
-        with open(failed_path, 'w', encoding='utf-8') as f:
-            json.dump(failed_items, f, indent=2, ensure_ascii=False)
-        print(f"\nFailed to process {len(failed_items)} items. See {failed_path} for details.")
+    # Open both output files in append mode
+    failed_path = output_path.replace('.json', '_failed.json')
+    with open(output_path, 'a', encoding='utf-8') as f_out, \
+         open(failed_path, 'a', encoding='utf-8') as f_failed:
+        
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            future_to_text = {
+                executor.submit(process_text, text): text 
+                for text in texts_to_process
+            }
+            
+            for future in tqdm(
+                concurrent.futures.as_completed(future_to_text),
+                total=len(texts_to_process),
+                desc="Processing texts"
+            ):
+                try:
+                    text, result, error = future.result()
+                    if error is None:
+                        json.dump({
+                            "original": text,
+                            "rewritten": result
+                        }, f_out, ensure_ascii=False)
+                        f_out.write('\n')
+                        f_out.flush()
+                    else:
+                        json.dump({
+                            "original": text,
+                            "error": error
+                        }, f_failed, ensure_ascii=False)
+                        f_failed.write('\n')
+                        f_failed.flush()
+                except Exception as e:
+                    json.dump({
+                        "original": future_to_text[future],
+                        "error": str(e)
+                    }, f_failed, ensure_ascii=False)
+                    f_failed.write('\n')
+                    f_failed.flush()
+    
+    if os.path.getsize(failed_path) > 0:
+        print(f"\nFailed to process some items. See {failed_path} for details.")
 
 if __name__ == "__main__":
     args = parse_args()
