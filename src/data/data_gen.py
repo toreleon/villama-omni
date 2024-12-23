@@ -5,21 +5,21 @@ import argparse
 import time
 from openai import OpenAI
 from openai import APIError, APITimeoutError, RateLimitError
-from prompts import INSTRUCTION_REWRITING
 from tqdm import tqdm
 from loguru import logger
 
-BASE_URL = os.getenv("BASE_URL", "https://api.openai.com")
-API_KEY = os.getenv("API_KEY")
-MODEL_NAME = os.getenv("MODEL_NAME", "casperhansen/llama-3.3-70b-instruct-awq")
+from settings import Settings
+from data.prompts import INSTRUCTION_REWRITING
 
-logger.debug(f"BASE_URL: {BASE_URL}")
-logger.debug(f"API_KEY: {API_KEY}")
-logger.debug(f"MODEL_NAME: {MODEL_NAME}")
+settings = Settings()
+
+logger.debug(f"BASE_URL: {settings.BASE_URL}")
+logger.debug(f"API_KEY: {settings.API_KEY}")
+logger.debug(f"MODEL_NAME: {settings.MODEL_NAME}")
 
 client = OpenAI(
-    base_url=BASE_URL,
-    api_key=API_KEY
+    base_url=settings.BASE_URL,
+    api_key=settings.API_KEY
 )
 
 def process_text(text, system_message=INSTRUCTION_REWRITING, max_retries=3, retry_delay=1):
@@ -27,7 +27,7 @@ def process_text(text, system_message=INSTRUCTION_REWRITING, max_retries=3, retr
     for attempt in range(max_retries):
         try:
             completion = client.chat.completions.create(
-                model=MODEL_NAME,
+                model=settings.MODEL_NAME,
                 messages=[
                     {"role": "system", "content": system_message.format(instruction=text)},
                 ],
